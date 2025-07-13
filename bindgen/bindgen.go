@@ -1,8 +1,9 @@
 package bindgen
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/lib
+#cgo CFLAGS: -march=native -mavx2 -I${SRCDIR}/lib
 #cgo LDFLAGS: -static-libgcc -static-libstdc++ -lpthread
+#include "mat.c"
 #include "call.c"
 */
 import "C"
@@ -132,4 +133,49 @@ func PrintCStructInGO() {
 	})
 
 	C.callFromGo(C.int(objID))
+}
+
+func AVX2MatAdd(a, b []float32) []float32 {
+	if len(a) != len(b) {
+		panic(fmt.Errorf("len(a) != len(b)"))
+	}
+
+	out := make([]float32, len(a))
+	C.mat_add(
+		(*C.float)(unsafe.Pointer(&a[0])),
+		(*C.float)(unsafe.Pointer(&b[0])),
+		(*C.float)(unsafe.Pointer(&out[0])),
+		C.int(len(out)),
+	)
+
+	return out
+}
+
+func AVX2MatSub(a, b []float32) []float32 {
+	if len(a) != len(b) {
+		panic(fmt.Errorf("len(a) != len(b)"))
+	}
+	out := make([]float32, len(a))
+
+	C.mat_sub(
+		(*C.float)(unsafe.Pointer(&a[0])),
+		(*C.float)(unsafe.Pointer(&b[0])),
+		(*C.float)(unsafe.Pointer(&out[0])),
+		C.int(len(out)),
+	)
+	return out
+}
+
+func AVX2MatMul(a, b []float32) []float32 {
+	if len(a) != len(b) {
+		panic(fmt.Errorf("len(a) != len(b)"))
+	}
+	out := make([]float32, len(a))
+	C.mat_mul(
+		(*C.float)(unsafe.Pointer(&a[0])),
+		(*C.float)(unsafe.Pointer(&b[0])),
+		(*C.float)(unsafe.Pointer(&out[0])),
+		C.int(len(out)),
+	)
+	return out
 }
