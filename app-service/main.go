@@ -18,6 +18,5 @@ func main() {
 	fmt.Println()
 	fmt.Println("============= avx 256 matrix calc =================")
 	fmt.Println(bindgen.AVX2MatAdd(v1, v2))
-	fmt.Println(bindgen.AVX2MatMul(v1, v2))
 	fmt.Println(bindgen.AVX2MatSub(v1, v2))
 }

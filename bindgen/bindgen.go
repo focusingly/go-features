@@ -151,6 +151,19 @@ func AVX2MatAdd(a, b []float32) []float32 {
 	return out
 }
 
+func AVX2MatAddWithRecv(a, b, result []float32) {
+	if len(a) != len(b) || len(a) != len(result) {
+		panic(fmt.Errorf("len(a) != len(b) != len(result)"))
+	}
+
+	C.mat_add(
+		(*C.float)(unsafe.Pointer(&a[0])),
+		(*C.float)(unsafe.Pointer(&b[0])),
+		(*C.float)(unsafe.Pointer(&result[0])),
+		C.int(len(result)),
+	)
+}
+
 func AVX2MatSub(a, b []float32) []float32 {
 	if len(a) != len(b) {
 		panic(fmt.Errorf("len(a) != len(b)"))
@@ -158,20 +171,6 @@ func AVX2MatSub(a, b []float32) []float32 {
 	out := make([]float32, len(a))
 
 	C.mat_sub(
-		(*C.float)(unsafe.Pointer(&a[0])),
-		(*C.float)(unsafe.Pointer(&b[0])),
-		(*C.float)(unsafe.Pointer(&out[0])),
-		C.int(len(out)),
-	)
-	return out
-}
-
-func AVX2MatMul(a, b []float32) []float32 {
-	if len(a) != len(b) {
-		panic(fmt.Errorf("len(a) != len(b)"))
-	}
-	out := make([]float32, len(a))
-	C.mat_mul(
 		(*C.float)(unsafe.Pointer(&a[0])),
 		(*C.float)(unsafe.Pointer(&b[0])),
 		(*C.float)(unsafe.Pointer(&out[0])),
