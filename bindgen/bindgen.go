@@ -5,6 +5,7 @@ package bindgen
 #cgo LDFLAGS: -static-libgcc -static-libstdc++ -lpthread
 #include "mat.c"
 #include "call.c"
+#include "counter.c"
 */
 import "C"
 import (
@@ -177,4 +178,9 @@ func AVX2MatSub(a, b []float32) []float32 {
 		C.int(len(out)),
 	)
 	return out
+}
+
+// GetCGONextID 基于 CGO 获取原子递增 ID
+func GetCGONextID() uint64 {
+	return uint64(C.next_id())
 }
